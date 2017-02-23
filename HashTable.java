@@ -34,19 +34,25 @@ public class HashTable {
             list[i] = null;
     }
 
-
     public int maxLoad() {
-        int count = 0;
-        for(int i = 0; i < p; i++) {
-            if(list[i] == null)
-                continue;
-            count += list[i].size();
-        }
-        return count;
+      int max = 0;
+      for(int i = 0; i < p; i++) {
+          if(list[i] != null)
+              if(list[i].size() > max)
+                  max = list[i].size();
+          }
+      return max;
     }
 
-    public void averageLoad() {
-
+    public double averageLoad() {
+        int count = 0, avg = 0;
+        for(int i = 0; i < p; i++) {
+            if(list[i] != null) {
+                count++;
+                avg += list[i].size();
+            }
+        }
+        return (double) avg / count;
     }
 
     public int size() {
@@ -62,16 +68,81 @@ public class HashTable {
     }
 
     public void add(Tuple t) {
+        //increase the number of tuples by 1, and add the tuple to the hash table
         numTuples++;
+        list[h.hash(t.getkey())].add(t);
+
+        //if load factor is greater than 0.7, resize and rehash table
+        if(loadFactor() > 0.7) {
+            resize();
+        }
 
     }
 
     public ArrayList<Tuple> search(int k) {
-        return new ArrayList<Tuple>();
+        ArrayList tuples = new ArrayList<Tuple>();
+        tuples = null;
+
+        for(int i = 0; i < p; i++) {
+            if(list[i] != null) {
+                for(int j = 0; j < list[i].size(); j++) {
+                    Tuple t = (Tuple) list[i].get(j);
+                    if(t.getkey() == k) {
+                        tuples.add(t);
+                    }
+                }
+            }
+        }
+        return tuples;
     }
 
     public void remove(Tuple t) {
+        for(int i = 0; i < p; i++) {
+            if(list[i] != null)
+                if(list[i].contains(t)) {
+                    list[i].remove(t);
+                    break;
+                }
+        }
+    }
 
+    /**
+     * Helper method, approximately doubles the size of the hash table
+     */
+    private void resize() {
+        //find next largest prime number after 2 * size
+        int temp = 2 * p;
+        while(true) {
+            temp++;
+            if(isPrime(temp)) {
+                p = temp;
+                break;
+            }
+        }
+        rehash();
+    }
+
+    /**
+     * Helper method, rehashes all the elements of the hash table,
+     * called from resize, after the size has been updated
+     */
+    private void rehash() {
+        //create new hash table with updated size p
+        ArrayList[] newList = new ArrayList[p];
+
+        for(int i = 0; i < list.length; i++) {
+            if(list[i] != null) {
+                for(int j = 0; j < list[i].size(); j++) {
+
+                    //create a new tuple from the given position of the iterations
+                    Tuple t = (Tuple) list[i].get(j);
+
+                    //rehash tuple, add to the new list
+                    newList[h.hash(t.getkey())].add(t);
+                }
+            }
+        }
+        list = newList;
     }
 
     /**

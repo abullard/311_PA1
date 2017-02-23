@@ -22,7 +22,7 @@ public class HashFunction {
         b = rand.nextInt(p);
     }
 
-    public float hash(int x) {
+    public int hash(int x) {
         return (a*x + b) % p;
     }
 
