@@ -73,12 +73,12 @@ public class HashTable {
         
         int key = t.getkey();
         System.out.println(key);
-        int hash = h.hash(key);
+        long hash = h.hash(key);
         System.out.println(hash);
-        if (list[hash] == null) {
-        	list[hash] = new ArrayList<Tuple>();
+        if (list[(int) hash] == null) {
+        	list[(int) hash] = new ArrayList<Tuple>();
         }
-        list[hash].add(t);
+        list[(int) hash].add(t);
         
         // list[h.hash(t.getkey())].add(t);
         
@@ -148,8 +148,10 @@ public class HashTable {
                     //create a new tuple from the given position of the iterations
                     Tuple t = (Tuple) list[i].get(j);
 
+                    int key = t.getkey();
+                    long hash = h.hash(key);
                     //rehash tuple, add to the new list
-                    newList[h.hash(t.getkey())].add(t);
+                    newList[(int) hash].add(t);
                 }
             }
         }

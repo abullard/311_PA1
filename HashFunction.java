@@ -5,7 +5,15 @@ import java.util.Random;
  *  @author Austin Bullard
  */
 public class HashFunction {
-    private int a, b, p;
+
+    public static void main(String[] args) {
+        HashFunction h = new HashFunction(3);
+        h.hash(10);
+    }
+
+
+    private Long p;
+    private int a, b;
 
     public HashFunction(int range) {
         Random rand = new Random();
@@ -13,16 +21,18 @@ public class HashFunction {
         while(true) {
             range++;
             if(isPrime(range)) {
-                p = range;
+                long temp = range;
+                p = temp;
                 break;
             }
         }
 
-        a = rand.nextInt(p);
-        b = rand.nextInt(p);
+        int temp = Integer.parseInt(p.toString());
+        a = rand.nextInt(temp);
+        b = rand.nextInt(temp);
     }
 
-    public int hash(int x) {
+    public Long hash(int x) {
     	System.out.println("a: " + a);
     	System.out.println("x: " + x);
     	System.out.println("b: " + b);
@@ -38,23 +48,26 @@ public class HashFunction {
         return b;
     }
 
-    public int getP() {
+    public Long getP() {
         return p;
     }
 
     public void setA(int x) {
-        a = x % p;
+        int temp = Integer.parseInt(p.toString());
+        a = x % temp;
     }
 
     public void setB(int y) {
-        b = y % p;
+        int temp = Integer.parseInt(p.toString());
+        b = y % temp;
     }
 
     public void setP(int x) {
         while(true) {
             x++;
             if(isPrime(x)) {
-                p = x;
+                long temp = x;
+                p = temp;
                 break;
             }
         }
