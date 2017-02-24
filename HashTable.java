@@ -16,15 +16,12 @@ public class HashTable {
 
         //find next largest prime number after size
         while(true) {
-            
             if(isPrime(size)) {
                 p = size;
                 break;
             }
             size++;
         }
-        //System.out.println("argument size inConstructor: " + size);
-        //System.out.println("argument p inConstructor: " + p);
 
         //create hash function with p as range
         h = new HashFunction(p);
@@ -56,7 +53,7 @@ public class HashTable {
                 avg += list[i].size();
             }
         }
-        return (float) avg / (float) count;
+        return (float) avg / count;
     }
 
     public int size() {
@@ -91,16 +88,12 @@ public class HashTable {
             System.out.println("Key: " + key);
             System.out.println("HashVal: " + hash);
             System.out.println("HT listSize add: " + list.length);
-        	
         }
-        
-        
-        
+
         //if load factor is greater than 0.7, resize and rehash table
         if(loadFactor() > 0.7) {
             resize();
         }
-
     }
 
     public ArrayList<Tuple> search(int k) {

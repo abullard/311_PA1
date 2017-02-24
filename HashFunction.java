@@ -11,9 +11,7 @@ public class HashFunction {
         h.hash(10);
     }
 
-
-    private int p;
-    private int a, b;
+    private int a, b, p;
 
     public HashFunction(int range) {
         Random rand = new Random();
@@ -21,16 +19,14 @@ public class HashFunction {
         while(true) {
             
             if(isPrime(range)) {
-                int temp = range;
-                p = temp;
+                p = range;
                 break;
             }
             range++;
         }
 
-        int temp = p;
-        a = rand.nextInt(temp);
-        b = rand.nextInt(temp);
+        a = rand.nextInt(p);
+        b = rand.nextInt(p);
     }
 
     public int hash(int x) {
@@ -65,20 +61,17 @@ public class HashFunction {
     }
 
     public void setA(int x) {
-        int temp = p;
-        a = x % temp;
+        a = x % p;
     }
 
     public void setB(int y) {
-        int temp = p;
-        b = y % temp;
+        b = y % p;
     }
 
     public void setP(int x) {
         while(true) {
             if(isPrime(x)) {
-                int temp = x;
-                p = temp;
+                p = x;
                 break;
             }
             x++;

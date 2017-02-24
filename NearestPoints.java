@@ -13,15 +13,26 @@ import java.util.Scanner;
  *
  */
 public class NearestPoints {
-	private ArrayList<Float> pointList = new ArrayList<Float>();
+	public ArrayList<Float> pointList = new ArrayList<Float>();
 	private HashTable duHashMich;
 	
 	public static void main(String[] args) {
 		NearestPoints np = new NearestPoints("./points.txt");
 		//np.naiveNearestPoints(591063.5f);
-		//np.allNearestPointsNaive();
 		//np.npHashNearestPoints(164140.6f);
+
+		long start = System.currentTimeMillis();
+		np.allNearestPointsNaive();
+		long stop = System.currentTimeMillis();
+
+		System.out.println("Time to run allNearestPointsNaive(): " + (stop - start));
+
+		start = System.currentTimeMillis();
 		np.allNearestPointsHash();
+		stop = System.currentTimeMillis();
+
+		System.out.println("Time to run allNearestPointsHash(): " + (stop - start));
+
 	}
 
     public NearestPoints(String dataFile) {
@@ -75,12 +86,12 @@ public class NearestPoints {
 		queries.
      */
     public void buildDataStructure() {
-    	System.out.println("pointList size inBuildDataStructure: " + pointList.size());
+    	//System.out.println("pointList size inBuildDataStructure: " + pointList.size());
     	duHashMich = new HashTable(pointList.size());
     	
     	//populate duHashMich table with points
     	for(Float f: pointList) {
-    		Tuple t = new Tuple((int)Math.floor(f),f);
+    		Tuple t = new Tuple((int)Math.floor(f), f);
     		duHashMich.add(t);
     		//System.out.println(t.getkey() + "," + t.getValue());
     		
@@ -99,13 +110,13 @@ public class NearestPoints {
     	int f = (int)Math.floor(p);
 
     	
-    	System.out.println("p: " + p);
+    	//System.out.println("p: " + p);
     	//Iterate through all the points at p and find the "closest" ones to p		
     	tuplesP = duHashMich.search(f);
     	for (Tuple t: tuplesP) {
     		float val = t.getValue();
     		if (Math.abs(p-val) <= 1.0) {
-    			System.out.println(val);
+    			//System.out.println(val);
     			nearPoints.add(val);
     		}
     	}
@@ -116,7 +127,7 @@ public class NearestPoints {
     	for (Tuple t: tuplesPminus1) {
     		float val = t.getValue();
     		if (Math.abs(p-val) <= 1.0) {
-    			System.out.println(val);
+    			//System.out.println(val);
     			nearPoints.add(val);
     		}
     	}
@@ -128,7 +139,7 @@ public class NearestPoints {
     	for (Tuple t: tuplesPplus1) {
     		float val = t.getValue();
     		if (Math.abs(p-val) <= 1.0) {
-    			System.out.println(val);
+    			//System.out.println(val);
     			nearPoints.add(val);
     		}
     	}
