@@ -8,6 +8,8 @@ import java.util.Scanner;
 public class RecSys {
 
     private int[][] mrMatrix;
+    private PrintWriter writer;
+    private NearestPoints near;
 
     public static void main(String[] args) throws FileNotFoundException{
         RecSys sys = new RecSys("./hello.txt");
@@ -19,6 +21,7 @@ public class RecSys {
             //create the readers
             FileReader reader = new FileReader(new File(mrMatrix));
             BufferedReader in = new BufferedReader(reader);
+            writer = new PrintWriter("matrixpoints.txt", "UTF-8");
 
             //create a line scanner for the initial number of users and movies from the text file
             Scanner scan = new Scanner(in.readLine());
@@ -33,10 +36,18 @@ public class RecSys {
                 parseText(in.readLine(), i, movies);
             }
 
+            //close all file IOs and the scanner
             in.close();
+            writer.close();
             reader.close();
+            scan.close();
 
-        } catch (Exception e) {
+            //create new nearest points object, with the points from the movie rating matrix
+            near = new NearestPoints("./matrixpoints.txt");
+            System.out.println();
+
+
+        } catch (IOException e) {
             System.out.println("File could not be found.");
             e.printStackTrace();
         }
@@ -64,24 +75,15 @@ public class RecSys {
         float point = scan.nextFloat();
 
         //add point to the HashTable
-
+        write(point);
 
         for(int i = 0; i < movies; i++) {
             mrMatrix[user][i] = scan.nextInt();
         }
-        System.out.println();
+        scan.close();
     }
 
-    private void write(int point) throws IOException {
-        try{
-            PrintWriter writer = new PrintWriter("matrixpoints.txt", "UTF-8");
-            writer.println(point);
-            writer.close();
-        } catch (IOException e) {
-            System.out.println("There was an error creating and writing to the file.");
-            e.printStackTrace();
-        }
+    private void write(float point) {
+        writer.println(point + " ");
     }
-
-
 }
