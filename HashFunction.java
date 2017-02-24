@@ -34,12 +34,12 @@ public class HashFunction {
     }
 
     public int hash(int x) {
-    	int ax = a*x;
+    	Long ax = (long)a*(long)x;
     	//System.out.println("ax: " + ax);
     	//System.out.println("p: " + p);
-    	int axb = ax + b;
+    	Long axb = ax + b;
     	//System.out.println("axb: " + axb);
-    	int finalVal = axb % p;
+    	Long finalVal = axb % (long)p;
     	//System.out.println("finalVal: " + finalVal);
     	if (finalVal < 0) finalVal += p;
     	//System.out.println("finalVal2: " + finalVal);
@@ -49,7 +49,7 @@ public class HashFunction {
         	System.out.println("axb: " + axb);
         	System.out.println("finalVal: " + finalVal);
     	}
-        return finalVal;
+        return finalVal.intValue();
     }
 
     public int getA() {
@@ -76,12 +76,12 @@ public class HashFunction {
 
     public void setP(int x) {
         while(true) {
-            x++;
             if(isPrime(x)) {
                 int temp = x;
                 p = temp;
                 break;
             }
+            x++;
         }
     }
 
@@ -93,6 +93,7 @@ public class HashFunction {
      *  true if x is prime, false otherwise
      */
     private boolean isPrime(int x) {
+    	if (x == 2)     { return true; }
         if (x % 2 == 0) { return false; }
 
         for(int i = 3; i * i <= x; i += 2) {

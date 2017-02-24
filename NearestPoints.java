@@ -14,18 +14,17 @@ import java.util.Scanner;
  */
 public class NearestPoints {
 	private ArrayList<Float> pointList = new ArrayList<Float>();
-	private HashTable duHashMich; 
+	private HashTable duHashMich;
 	
 	public static void main(String[] args) {
-		NearestPoints np = new NearestPoints();
-		np.nearestPoints("/Users/erelsbernd/Documents/IowaState/IowaStateSpring2017/cs311/CS311_NearestPoints/points.txt");
-		np.buildDataStructure();
+		NearestPoints np = new NearestPoints("./points.txt");
 		//np.naiveNearestPoints(591063.5f);
-		np.allNearestPointsNaive();
+		//np.allNearestPointsNaive();
 		//np.npHashNearestPoints(164140.6f);
+		np.allNearestPointsHash();
 	}
 
-    public void nearestPoints(String dataFile) {
+    public NearestPoints(String dataFile) {
     	
     	//read in file and populate the array list pointList
     	try {
@@ -41,15 +40,17 @@ public class NearestPoints {
     	} catch (Exception ex) {
             ex.printStackTrace();
         }
+    	buildDataStructure();
 
     }
 
-    public void nearestPoints(ArrayList<Float> pointSet) {
+    public NearestPoints(ArrayList<Float> pointSet) {
     	
     	//populate the array list pointList
     	for (Float f: pointSet) {
     		pointList.add(f);
     	}
+    	buildDataStructure();
     }
 
     /**
@@ -138,17 +139,18 @@ public class NearestPoints {
 
     public void allNearestPointsNaive() {
     	ArrayList<Float> nearPoints;
-    	String txtFilePath = "./src/output.txt";
+    	String txtFilePath 
+    	= "./NaiveSolution.txt";
     	try (FileWriter fw = new FileWriter(txtFilePath, false);
 			BufferedWriter bw = new BufferedWriter(fw);
 			PrintWriter out = new PrintWriter(bw)) { 
     	//Iterate through all the points and find the "closest" ones to p
-	    	for (Float p: pointList) {
+	    	for (float p: pointList) {
 		    	nearPoints = naiveNearestPoints(p);
 		    	
 		    	
 		    	//write nearPoints line to file
-		    	System.out.println(nearPoints);
+		    	//System.out.println(nearPoints);
 				out.print(p);
 				for (float x: nearPoints) {
 					out.print(" " + x);
@@ -161,6 +163,25 @@ public class NearestPoints {
     }
 
     public void allNearestPointsHash() {
-
+    	ArrayList<Float> nearPoints;
+    	String txtFilePath = "./HashSolution.txt";
+    	try (FileWriter fw = new FileWriter(txtFilePath, false);
+			BufferedWriter bw = new BufferedWriter(fw);
+			PrintWriter out = new PrintWriter(bw)) { 
+    	//Iterate through all the points and find the "closest" ones to p
+	    	for (float p: pointList) {
+		    	nearPoints = npHashNearestPoints(p);
+		    	
+		    	
+		    	//write nearPoints line to file
+		    	//System.out.println(nearPoints);
+				out.print(p);
+				for (float x: nearPoints) {
+					out.print(" " + x);
+				}
+				out.println("\n");
+	    	}
+    	} catch (IOException e) {
+		}
     }
 }

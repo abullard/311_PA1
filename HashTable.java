@@ -48,7 +48,7 @@ public class HashTable {
       return max;
     }
 
-    public double averageLoad() {
+    public float averageLoad() {
         int count = 0, avg = 0;
         for(int i = 0; i < p; i++) {
             if(list[i] != null) {
@@ -56,7 +56,7 @@ public class HashTable {
                 avg += list[i].size();
             }
         }
-        return (double) avg / count;
+        return (float) avg / (float) count;
     }
 
     public int size() {
@@ -67,8 +67,8 @@ public class HashTable {
         return numTuples;
     }
 
-    public int loadFactor() {
-        return numElements()/size();
+    public float loadFactor() {
+        return (float)numElements()/(float)size();
     }
 
     public void add(Tuple t) {
@@ -116,14 +116,17 @@ public class HashTable {
         return tuples;
     }
 
-    public void remove(Tuple t) {
+    public boolean remove(Tuple t) {
+    	boolean result = false;
         for(int i = 0; i < p; i++) {
             if(list[i] != null)
                 if(list[i].contains(t)) {
                     list[i].remove(t);
+                    result = true;
                     break;
                 }
         }
+        return result;
     }
 
     /**
@@ -158,9 +161,12 @@ public class HashTable {
                     Tuple t = (Tuple) list[i].get(j);
 
                     int key = t.getkey();
-                    long hash = h.hash(key);
+                    int hash = h.hash(key);
                     //rehash tuple, add to the new list
-                    newList[(int) hash].add(t);
+                    if (newList[hash] == null) {
+                    	newList[hash] = new ArrayList<Tuple>();
+                    }
+                    newList[hash].add(t); 
                 }
             }
         }
