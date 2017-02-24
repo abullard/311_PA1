@@ -1,4 +1,5 @@
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -7,12 +8,13 @@ import java.util.Scanner;
  */
 public class RecSys {
 
-    private int[][] mrMatrix;
+    private float[][] mrMatrix;
     private PrintWriter writer;
     private NearestPoints near;
 
     public static void main(String[] args) throws FileNotFoundException{
         RecSys sys = new RecSys("./hello.txt");
+        System.out.println(sys.RatingOf(2,3));
     }
 
     public RecSys(String mrMatrix) throws FileNotFoundException {
@@ -29,7 +31,7 @@ public class RecSys {
             int movies = scan.nextInt();
 
             //create the matrix, we now know the size
-            this.mrMatrix = new int[users][movies];
+            this.mrMatrix = new float[users][movies + 1];
 
             //for ever user in the matrix, parse their movie ratings
             for(int i = 0; i < users; i++) {
@@ -44,9 +46,6 @@ public class RecSys {
 
             //create new nearest points object, with the points from the movie rating matrix
             near = new NearestPoints("./matrixpoints.txt");
-            System.out.println();
-
-
         } catch (IOException e) {
             System.out.println("File could not be found.");
             e.printStackTrace();
@@ -55,9 +54,27 @@ public class RecSys {
     }
 
     public float RatingOf(int u, int m) {
+        float rating = mrMatrix[u][m + 1];
+        ArrayList list;
+        if(rating != 0) {
+            return rating;
+        } else {
+            float avg = 0.0f;
+            int count = 0;
+            list = near.npHashNearestPoints(mrMatrix[u][0]);
 
-
-        return 0.0f;
+            for(int i = 0; i < list.size(); i++) {
+                for(int j = 0; j < mrMatrix.length; j++) {
+                    if(mrMatrix[j][0] == (float) list.get(i)) {
+                        if(mrMatrix[j][m + 1] != 0) {
+                            count++;
+                            avg += mrMatrix[j][m + 1];
+                        }
+                    }
+                }
+            }
+            return avg / (float) count;
+        }
     }
 
     /**
@@ -76,8 +93,9 @@ public class RecSys {
 
         //add point to the HashTable
         write(point);
+        mrMatrix[user][0] = point;
 
-        for(int i = 0; i < movies; i++) {
+        for(int i = 1; i < movies + 1; i++) {
             mrMatrix[user][i] = scan.nextInt();
         }
         scan.close();
