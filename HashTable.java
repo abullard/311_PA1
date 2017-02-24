@@ -16,20 +16,24 @@ public class HashTable {
 
         //find next largest prime number after size
         while(true) {
-            size++;
+            
             if(isPrime(size)) {
                 p = size;
                 break;
             }
+            size++;
         }
+        //System.out.println("argument size inConstructor: " + size);
+        //System.out.println("argument p inConstructor: " + p);
 
         //create hash function with p as range
         h = new HashFunction(p);
 
         //create Hash Table using ArrayList, of capacity p
         list = new ArrayList[p];
+        System.out.println("HT listSize inConstructor: " + list.length);
 
-        //initalize list to null
+        //initialize list to null
         for(int i = 0; i < p; i++)
             list[i] = null;
     }
@@ -72,15 +76,24 @@ public class HashTable {
         numTuples++;
         
         int key = t.getkey();
-        System.out.println(key);
-        long hash = h.hash(key);
-        System.out.println(hash);
-        if (list[(int) hash] == null) {
-        	list[(int) hash] = new ArrayList<Tuple>();
+        //System.out.println("Key: " + key);
+        int hash = h.hash(key);
+        //System.out.println("HashVal: " + hash);
+        //System.out.println("HT listSize add: " + list.length);
+        //System.out.println("Values: " + list[hash]);
+        try {
+	        if (list[hash] == null) {
+	        	list[hash] = new ArrayList<Tuple>();
+	        }
+	        list[hash].add(t);
+        } catch (Exception e) {
+        	e.printStackTrace();
+            System.out.println("Key: " + key);
+            System.out.println("HashVal: " + hash);
+            System.out.println("HT listSize add: " + list.length);
+        	
         }
-        list[(int) hash].add(t);
         
-        // list[h.hash(t.getkey())].add(t);
         
         
         //if load factor is greater than 0.7, resize and rehash table
@@ -93,7 +106,7 @@ public class HashTable {
     public ArrayList<Tuple> search(int k) {
     	ArrayList<Tuple> tuples = new ArrayList<Tuple>();
     	
-    	int hashedKey = h.hash(k).intValue();
+    	int hashedKey = h.hash(k);
     	if (list[hashedKey] != null) {
     		for (int j = 0; j < list[hashedKey].size(); j++) {
     			tuples.add((Tuple)list[hashedKey].get(j));

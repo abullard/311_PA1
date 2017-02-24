@@ -12,32 +12,44 @@ public class HashFunction {
     }
 
 
-    private Long p;
+    private int p;
     private int a, b;
 
     public HashFunction(int range) {
         Random rand = new Random();
 
         while(true) {
-            range++;
+            
             if(isPrime(range)) {
-                long temp = range;
+                int temp = range;
                 p = temp;
                 break;
             }
+            range++;
         }
 
-        int temp = Integer.parseInt(p.toString());
+        int temp = p;
         a = rand.nextInt(temp);
         b = rand.nextInt(temp);
     }
 
-    public Long hash(int x) {
-    	System.out.println("a: " + a);
-    	System.out.println("x: " + x);
-    	System.out.println("b: " + b);
-    	System.out.println("p: " + p);
-        return (a*x + b) % p;
+    public int hash(int x) {
+    	int ax = a*x;
+    	//System.out.println("ax: " + ax);
+    	//System.out.println("p: " + p);
+    	int axb = ax + b;
+    	//System.out.println("axb: " + axb);
+    	int finalVal = axb % p;
+    	//System.out.println("finalVal: " + finalVal);
+    	if (finalVal < 0) finalVal += p;
+    	//System.out.println("finalVal2: " + finalVal);
+    	if (finalVal >= p) {
+        	System.out.println("ax: " + ax);
+        	System.out.println("p: " + p);
+        	System.out.println("axb: " + axb);
+        	System.out.println("finalVal: " + finalVal);
+    	}
+        return finalVal;
     }
 
     public int getA() {
@@ -48,17 +60,17 @@ public class HashFunction {
         return b;
     }
 
-    public Long getP() {
+    public int getP() {
         return p;
     }
 
     public void setA(int x) {
-        int temp = Integer.parseInt(p.toString());
+        int temp = p;
         a = x % temp;
     }
 
     public void setB(int y) {
-        int temp = Integer.parseInt(p.toString());
+        int temp = p;
         b = y % temp;
     }
 
@@ -66,7 +78,7 @@ public class HashFunction {
         while(true) {
             x++;
             if(isPrime(x)) {
-                long temp = x;
+                int temp = x;
                 p = temp;
                 break;
             }

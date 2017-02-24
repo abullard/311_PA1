@@ -22,6 +22,7 @@ public class NearestPoints {
 		np.buildDataStructure();
 		//np.naiveNearestPoints(591063.5f);
 		np.allNearestPointsNaive();
+		//np.npHashNearestPoints(164140.6f);
 	}
 
     public void nearestPoints(String dataFile) {
@@ -61,7 +62,7 @@ public class NearestPoints {
     	
     	//Iterate through all the points and find the "closest" ones to p
     	for (Float f: pointList) {
-    		if (Math.abs(p-f) <= 1) {
+    		if (Math.abs(p-f) <= 1.0) {
     			//System.out.println(f.toString());
     			nearPoints.add(f);
     		}
@@ -74,6 +75,7 @@ public class NearestPoints {
 		queries.
      */
     public void buildDataStructure() {
+    	System.out.println("pointList size inBuildDataStructure: " + pointList.size());
     	duHashMich = new HashTable(pointList.size());
     	
     	//populate duHashMich table with points
@@ -91,7 +93,46 @@ public class NearestPoints {
 		must be O(N(p)); otherwise you will receive zero credit.
      * @param p
      */
-    public void npHashNearestPoints(float p) {
+    public ArrayList<Float> npHashNearestPoints(float p) {
+    	ArrayList<Float> nearPoints = new ArrayList<Float>();
+    	ArrayList<Tuple> tuplesP = new ArrayList<Tuple>();
+    	int f = (int)Math.floor(p);
+
+    	
+    	System.out.println("p: " + p);
+    	//Iterate through all the points at p and find the "closest" ones to p		
+    	tuplesP = duHashMich.search(f);
+    	for (Tuple t: tuplesP) {
+    		float val = t.getValue();
+    		if (Math.abs(p-val) <= 1.0) {
+    			System.out.println(val);
+    			nearPoints.add(val);
+    		}
+    	}
+    	
+    	//Iterate through all the points at p-1 and find the "closest" ones to p
+    	ArrayList<Tuple> tuplesPminus1 = new ArrayList<Tuple>();
+    	tuplesPminus1 = duHashMich.search(f-1);
+    	for (Tuple t: tuplesPminus1) {
+    		float val = t.getValue();
+    		if (Math.abs(p-val) <= 1.0) {
+    			System.out.println(val);
+    			nearPoints.add(val);
+    		}
+    	}
+    	
+    	//Iterate through all the points at p+1 and find the "closest" ones to p
+    	ArrayList<Tuple> tuplesPplus1 = new ArrayList<Tuple>();
+    	tuplesPplus1 = duHashMich.search(f+1);
+    	//Iterate through all the points at p-1 and find the "closest" ones to p
+    	for (Tuple t: tuplesPplus1) {
+    		float val = t.getValue();
+    		if (Math.abs(p-val) <= 1.0) {
+    			System.out.println(val);
+    			nearPoints.add(val);
+    		}
+    	}
+    	return nearPoints;
 
     }
 
@@ -108,7 +149,11 @@ public class NearestPoints {
 		    	
 		    	//write nearPoints line to file
 		    	System.out.println(nearPoints);
-				out.println(nearPoints);
+				out.print(p);
+				for (float x: nearPoints) {
+					out.print(" " + x);
+				}
+				out.println("\n");
 	    	}
     	} catch (IOException e) {
 		}
