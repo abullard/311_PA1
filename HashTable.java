@@ -70,8 +70,19 @@ public class HashTable {
     public void add(Tuple t) {
         //increase the number of tuples by 1, and add the tuple to the hash table
         numTuples++;
-        list[h.hash(t.getkey())].add(t);
-
+        
+        int key = t.getkey();
+        System.out.println(key);
+        int hash = h.hash(key);
+        System.out.println(hash);
+        if (list[hash] == null) {
+        	list[hash] = new ArrayList<Tuple>();
+        }
+        list[hash].add(t);
+        
+        // list[h.hash(t.getkey())].add(t);
+        
+        
         //if load factor is greater than 0.7, resize and rehash table
         if(loadFactor() > 0.7) {
             resize();

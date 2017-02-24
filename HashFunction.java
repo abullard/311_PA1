@@ -23,6 +23,10 @@ public class HashFunction {
     }
 
     public int hash(int x) {
+    	System.out.println("a: " + a);
+    	System.out.println("x: " + x);
+    	System.out.println("b: " + b);
+    	System.out.println("p: " + p);
         return (a*x + b) % p;
     }
 
