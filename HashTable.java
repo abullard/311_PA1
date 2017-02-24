@@ -91,19 +91,15 @@ public class HashTable {
     }
 
     public ArrayList<Tuple> search(int k) {
-        ArrayList tuples = new ArrayList<Tuple>();
-        tuples = null;
-
-        for(int i = 0; i < p; i++) {
-            if(list[i] != null) {
-                for(int j = 0; j < list[i].size(); j++) {
-                    Tuple t = (Tuple) list[i].get(j);
-                    if(t.getkey() == k) {
-                        tuples.add(t);
-                    }
-                }
-            }
-        }
+    	ArrayList<Tuple> tuples = new ArrayList<Tuple>();
+    	
+    	int hashedKey = h.hash(k).intValue();
+    	if (list[hashedKey] != null) {
+    		for (int j = 0; j < list[hashedKey].size(); j++) {
+    			tuples.add((Tuple)list[hashedKey].get(j));
+    		}
+    	}
+    	
         return tuples;
     }
 
