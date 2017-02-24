@@ -41,7 +41,6 @@ public class NearestPoints {
             ex.printStackTrace();
         }
     	buildDataStructure();
-
     }
 
     public NearestPoints(ArrayList<Float> pointSet) {
@@ -184,4 +183,9 @@ public class NearestPoints {
     	} catch (IOException e) {
 		}
     }
+
+	//helper for unit tests
+	public ArrayList<Float> getPointList() {
+		return pointList;
+	}
 }
