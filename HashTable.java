@@ -1,13 +1,14 @@
 import java.util.ArrayList;
 
 /**
- * Created by Austin Bullard on 2/17/17.
+ * @author Erin Elsbernd, Austin Bullard
  *
  */
 public class HashTable {
 
     //Instance Fields
     private int numTuples;
+    private int numBuckets = 0;
     private int p;
     private HashFunction h;
     private ArrayList[] list;
@@ -49,14 +50,16 @@ public class HashTable {
     }
 
     public float averageLoad() {
-        int count = 0, avg = 0;
+        /** int count = 0, avg = 0;
         for(int i = 0; i < p; i++) {
             if(list[i] != null) {
                 count++;
                 avg += list[i].size();
             }
         }
-        return (float) avg / (float) count;
+        return (float) avg / (float) count; 
+        */
+    	return (float) numTuples / (float) numBuckets;
     }
 
     public int size() {
@@ -75,22 +78,16 @@ public class HashTable {
         //increase the number of tuples by 1, and add the tuple to the hash table
         numTuples++;
         
-        int key = t.getkey();
-        //System.out.println("Key: " + key);
-        int hash = h.hash(key);
-        //System.out.println("HashVal: " + hash);
-        //System.out.println("HT listSize add: " + list.length);
-        //System.out.println("Values: " + list[hash]);
+        int key = t.getKey();
+        int hash = hash(key);
         try {
 	        if (list[hash] == null) {
 	        	list[hash] = new ArrayList<Tuple>();
+	        	numBuckets++;
 	        }
 	        list[hash].add(t);
         } catch (Exception e) {
         	e.printStackTrace();
-            System.out.println("Key: " + key);
-            System.out.println("HashVal: " + hash);
-            System.out.println("HT listSize add: " + list.length);
         	
         }
         
@@ -106,10 +103,14 @@ public class HashTable {
     public ArrayList<Tuple> search(int k) {
     	ArrayList<Tuple> tuples = new ArrayList<Tuple>();
     	
-    	int hashedKey = h.hash(k);
+    	int hashedKey = hash(k);
+    	//System.out.println("hashedKey: " + hashedKey);
     	if (list[hashedKey] != null) {
     		for (int j = 0; j < list[hashedKey].size(); j++) {
-    			tuples.add((Tuple)list[hashedKey].get(j));
+    			Tuple t = (Tuple)list[hashedKey].get(j);
+    	    	//System.out.println("Tuple" + j + ": " +  hashedKey + " " +t.getKey() + " " + t.getValue());
+    			if (k == t.getKey())
+    				tuples.add(t);
     		}
     	}
     	
@@ -118,14 +119,24 @@ public class HashTable {
 
     public boolean remove(Tuple t) {
     	boolean result = false;
-        for(int i = 0; i < p; i++) {
-            if(list[i] != null)
-                if(list[i].contains(t)) {
-                    list[i].remove(t);
-                    result = true;
-                    break;
-                }
-        }
+    	int hash = hash(t.getKey());
+    	if (list[hash] != null) {
+    		for (int j = 0; j < list[hash].size(); j++) {
+    			Tuple tupsMcGee = (Tuple) list[hash].get(j);
+    	    	if (tupsMcGee.getValue() == t.getValue()) {
+    	    		list[hash].remove(j);
+    	    		if (list[hash].size() == 0) {
+    	    			list[hash] = null;
+    	    			numBuckets--;
+    	    		}
+    	    		numTuples--;
+    	    		result = true;
+    	    		break;
+    	    		
+    	    	}
+    		}
+    	}
+      
         return result;
     }
 
@@ -136,15 +147,28 @@ public class HashTable {
         //find next largest prime number after 2 * size
         int temp = 2 * p;
         while(true) {
-            temp++;
+        	//temp++;
             if(isPrime(temp)) {
                 p = temp;
                 break;
             }
+            temp++;
         }
         rehash();
     }
 
+    
+    /**
+     * helper method to update hash function
+     */
+    protected void updateHashFunction(int x) {
+    	h = new HashFunction(x);
+    }
+    
+    protected int hash(int x) {
+        return h.hash(x);
+    }
+    
     /**
      * Helper method, rehashes all the elements of the hash table,
      * called from resize, after the size has been updated
@@ -152,7 +176,9 @@ public class HashTable {
     private void rehash() {
         //create new hash table with updated size p
         ArrayList[] newList = new ArrayList[p];
-
+        updateHashFunction(p); 
+        numBuckets = 0;
+        
         for(int i = 0; i < list.length; i++) {
             if(list[i] != null) {
                 for(int j = 0; j < list[i].size(); j++) {
@@ -160,19 +186,27 @@ public class HashTable {
                     //create a new tuple from the given position of the iterations
                     Tuple t = (Tuple) list[i].get(j);
 
-                    int key = t.getkey();
-                    int hash = h.hash(key);
+                    int key = t.getKey();
+                    int hash = hash(key);
                     //rehash tuple, add to the new list
                     if (newList[hash] == null) {
                     	newList[hash] = new ArrayList<Tuple>();
+                    	numBuckets++;
                     }
                     newList[hash].add(t); 
                 }
             }
         }
-        list = newList;
+        list = newList.clone();
     }
 
+    /**
+     * helper method to set the hash function
+     */
+    public void setHashFunction(int a, int b) {
+    	h.setA(a);
+    	h.setB(b);
+    }
     /**
      * Returns true if
      * @param x

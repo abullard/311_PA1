@@ -2,14 +2,14 @@ import java.util.Random;
 
 /**
  *  Class that represents a HashFunction
- *  @author Austin Bullard
+ *  @author Erin Elsbernd, Austin Bullard
  */
 public class HashFunction {
 
-    public static void main(String[] args) {
+    /**public static void main(String[] args) {
         HashFunction h = new HashFunction(3);
         h.hash(10);
-    }
+    }*/
 
 
     private int p;

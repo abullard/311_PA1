@@ -1,5 +1,5 @@
 /**
- * Created by Austin Bullard on 2/17/17.
+ * @author Erin Elsbernd, Austin Bullard
  *
  */
 public class Tuple {
@@ -12,7 +12,7 @@ public class Tuple {
         this.valueP = valueP;
     }
 
-    public int getkey() {
+    public int getKey() {
         return keyP;
     }
 
